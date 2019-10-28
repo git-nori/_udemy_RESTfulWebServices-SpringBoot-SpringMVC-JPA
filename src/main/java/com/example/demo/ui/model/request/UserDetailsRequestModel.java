@@ -19,16 +19,16 @@ public class UserDetailsRequestModel {
     public String getPassword() {
         return password;
     }
-    private void setFirstName(String firstName) {
+    public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
-    private void setLastName(String lastName) {
+    public void setLastName(String lastName) {
         this.lastName = lastName;
     }
-    private void setEmail(String email) {
+    public void setEmail(String email) {
         this.email = email;
     }
-    private void setPassword(String password) {
+    public void setPassword(String password) {
         this.password = password;
     }
 }

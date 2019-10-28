@@ -23,19 +23,19 @@ public class UserRest {
         return email;
     }
 
-    private void setUserId(String userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
-    private void setFirstName(String firstName) {
+    public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
-    private void setLastName(String lastName) {
+    public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
-    private void setEmail(String email) {
+    public void setEmail(String email) {
         this.email = email;
     }
 }

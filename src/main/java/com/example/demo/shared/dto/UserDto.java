@@ -55,39 +55,35 @@ public class UserDto implements Serializable {
         return emailVerificationStatus;
     }
 
-    private void setId(long id) {
-        this.id = id;
-    }
-
-    private void setUserId(String userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
-    private void setFirstName(String firstName) {
+    public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
-    private void setLastName(String lastName) {
+    public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
-    private void setEmail(String email) {
+    public void setEmail(String email) {
         this.email = email;
     }
 
-    private void setPassword(String password) {
+    public void setPassword(String password) {
         this.password = password;
     }
 
-    private void setEncryptedPassword(String encryptedPassword) {
+    public void setEncryptedPassword(String encryptedPassword) {
         this.encryptedPassword = encryptedPassword;
     }
 
-    private void setEmailVerificationToken(String emailVerificationToken) {
+    public void setEmailVerificationToken(String emailVerificationToken) {
         this.emailVerificationToken = emailVerificationToken;
     }
 
-    private void setEmailVerificationStatus(Boolean emailVerificationStatus) {
+    public void setEmailVerificationStatus(Boolean emailVerificationStatus) {
         this.emailVerificationStatus = emailVerificationStatus;
     }
 }
