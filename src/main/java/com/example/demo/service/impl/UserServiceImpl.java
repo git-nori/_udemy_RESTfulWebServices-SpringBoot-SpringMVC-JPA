@@ -1,7 +1,10 @@
 package com.example.demo.service.impl;
 
+import java.util.ArrayList;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -46,9 +49,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // TODO 自動生成されたメソッド・スタブ
-        return null;
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        /*
+         * 認証をするUserをDBから取得し
+         * email, password, roleをconstructorの引数に渡して生成したUserオブジェクトのインスタンスを返す
+         */
+        UserEntity userEntity = repository.findUserByEmail(email); // emailをキーにuserEntityを取得
+        if(userEntity == null) throw new UsernameNotFoundException(email);
+        return new User(userEntity.getEmail(), userEntity.getEncryptedPassword(), new ArrayList<>());
     }
 
 }
