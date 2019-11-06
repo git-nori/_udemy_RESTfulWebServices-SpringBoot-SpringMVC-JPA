@@ -16,6 +16,9 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.example.demo.SpringApplicationContext;
+import com.example.demo.service.UserService;
+import com.example.demo.shared.dto.UserDto;
 import com.example.demo.ui.model.request.UserLoginRequestModel;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -55,13 +58,16 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
             HttpServletResponse res, FilterChain chain, Authentication authResult)
             throws IOException, ServletException {
         // 認証が成功した際のメソッド(jwtのトークンを作成し、ヘッダーに追加する)
-        String userName = ((User) authResult.getPrincipal()).getUsername();
+        String userName = ((User) authResult.getPrincipal()).getUsername(); // 認証済みユーザーを取得し(getPrincipal)、そのユーザーのusername(メールアドレス)を取得
 
         String token = Jwts.builder()
                 .setSubject(userName)
                 .setExpiration(new Date(System.currentTimeMillis() + SecurityConstants.EXPIRATION_TIME))
                 .signWith(SignatureAlgorithm.HS512, SecurityConstants.TOKEN_SECRET)
                 .compact();
+        UserService userService = (UserService) SpringApplicationContext.getBean("userServiceImpl"); // DI管理されているUserServiceImplクラスをInject
+        UserDto userDto = userService.getUser(userName);
         res.addHeader(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + token); // ヘッダーにAuthorizationの項目を追加し、値を設定
+        res.addHeader("UserID", userDto.getUserId()); // ヘッダーにUserIDの項目を追加し、値を設定
     }
 }
