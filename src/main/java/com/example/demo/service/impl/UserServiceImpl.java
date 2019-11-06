@@ -31,6 +31,18 @@ public class UserServiceImpl implements UserService {
     BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        /*
+         * 認証をするUserをDBから取得し
+         * email, password, roleをconstructorの引数に渡して生成したUserオブジェクトのインスタンスを返す
+         */
+        UserEntity userEntity = repository.findByEmail(email); // emailをキーにuserEntityを取得
+        if (userEntity == null)
+            throw new UsernameNotFoundException(email);
+        return new User(userEntity.getEmail(), userEntity.getEncryptedPassword(), new ArrayList<>());
+    }
+
+    @Override
     public UserDto createUser(UserDto user) {
         // email(unique)を条件としてレコードの取得ができた場合、例外をスローする
         if (repository.findByEmail(user.getEmail()) != null)
@@ -88,17 +100,5 @@ public class UserServiceImpl implements UserService {
         BeanUtils.copyProperties(updatedUserDetails, returnValue);
 
         return returnValue;
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        /*
-         * 認証をするUserをDBから取得し
-         * email, password, roleをconstructorの引数に渡して生成したUserオブジェクトのインスタンスを返す
-         */
-        UserEntity userEntity = repository.findByEmail(email); // emailをキーにuserEntityを取得
-        if (userEntity == null)
-            throw new UsernameNotFoundException(email);
-        return new User(userEntity.getEmail(), userEntity.getEncryptedPassword(), new ArrayList<>());
     }
 }
