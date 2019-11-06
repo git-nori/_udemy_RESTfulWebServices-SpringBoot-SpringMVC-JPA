@@ -27,7 +27,9 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         http.csrf().disable().authorizeRequests()
                 .antMatchers(HttpMethod.POST, SecurityConstants.SIGN_UP_URL)
                 .permitAll()
-                .anyRequest().authenticated().and().addFilter(getAuthenticationFilter()); // 認証にはカスタムしたAuthenticationFilterクラスを使用するよう設定
+                .anyRequest().authenticated().and()
+                .addFilter(getAuthenticationFilter()) // 認証にはカスタムしたAuthenticationFilterクラスを使用するよう設定
+                .addFilter(new AuthorizationFilter(authenticationManager())); // トークンの検証にAuthorizationFilterクラスを使用するよう設定
     }
 
     @Override
