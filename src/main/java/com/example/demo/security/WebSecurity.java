@@ -5,6 +5,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.example.demo.service.UserService;
@@ -29,7 +30,9 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .anyRequest().authenticated().and()
                 .addFilter(getAuthenticationFilter()) // 認証にはカスタムしたAuthenticationFilterクラスを使用するよう設定
-                .addFilter(new AuthorizationFilter(authenticationManager())); // トークンの検証にAuthorizationFilterクラスを使用するよう設定
+                .addFilter(new AuthorizationFilter(authenticationManager())) // トークンの検証にAuthorizationFilterクラスを使用するよう設定
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS); // HttpSessionを用いないよう設定(jwtではセッションで管理することはしないため)
     }
 
     @Override
