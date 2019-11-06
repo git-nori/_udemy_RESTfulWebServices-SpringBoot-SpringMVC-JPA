@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto createUser(UserDto user) {
         // email(unique)を条件としてレコードの取得ができた場合、例外をスローする
-        if (repository.findUserByEmail(user.getEmail()) != null)
+        if (repository.findByEmail(user.getEmail()) != null)
             throw new RuntimeException("record is allready exists, email => " + user.getEmail());
 
         UserEntity userEntity = new UserEntity();
@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getUser(String email) {
-        UserEntity userEntity = repository.findUserByEmail(email);
+        UserEntity userEntity = repository.findByEmail(email);
         if (userEntity == null)
             throw new UsernameNotFoundException(email);
         UserDto returnValue = new UserDto();
@@ -76,7 +76,7 @@ public class UserServiceImpl implements UserService {
          * 認証をするUserをDBから取得し
          * email, password, roleをconstructorの引数に渡して生成したUserオブジェクトのインスタンスを返す
          */
-        UserEntity userEntity = repository.findUserByEmail(email); // emailをキーにuserEntityを取得
+        UserEntity userEntity = repository.findByEmail(email); // emailをキーにuserEntityを取得
         if (userEntity == null)
             throw new UsernameNotFoundException(email);
         return new User(userEntity.getEmail(), userEntity.getEncryptedPassword(), new ArrayList<>());
