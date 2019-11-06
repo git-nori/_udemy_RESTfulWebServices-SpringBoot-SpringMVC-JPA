@@ -10,11 +10,13 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.exceptions.UserServiceException;
 import com.example.demo.io.entity.UserEntity;
 import com.example.demo.io.repository.UserRepository;
 import com.example.demo.service.UserService;
 import com.example.demo.shared.Utils;
 import com.example.demo.shared.dto.UserDto;
+import com.example.demo.ui.model.response.ErrorMessages;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -71,6 +73,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserDto updateUser(String userId, UserDto user) {
+        UserEntity userEntity = repository.findByUserId(userId);
+        // 更新するユーザーデータが存在しない場合、UserServiceExceptionをスローする
+        if (userEntity == null)
+            throw new UserServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
+
+        userEntity.setFirstName(user.getFirstName());
+        userEntity.setLastName(user.getLastName());
+
+        UserEntity updatedUserDetails = repository.save(userEntity); // 更新後のUserEntityオブジェクトを格納
+        UserDto returnValue = new UserDto();
+
+        BeanUtils.copyProperties(updatedUserDetails, returnValue);
+
+        return returnValue;
+    }
+
+    @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         /*
          * 認証をするUserをDBから取得し
@@ -81,5 +101,4 @@ public class UserServiceImpl implements UserService {
             throw new UsernameNotFoundException(email);
         return new User(userEntity.getEmail(), userEntity.getEncryptedPassword(), new ArrayList<>());
     }
-
 }
