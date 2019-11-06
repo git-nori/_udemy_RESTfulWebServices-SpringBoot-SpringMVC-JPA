@@ -2,6 +2,7 @@ package com.example.demo.ui.controller;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,7 +24,8 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @GetMapping("/{id}")
+    @GetMapping(path = "/{id}",
+            produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
     public UserRest getUser(@PathVariable("id") String id) {
         UserRest returnValue = new UserRest();
 
@@ -33,7 +35,10 @@ public class UserController {
         return returnValue;
     }
 
-    @PostMapping
+    @PostMapping(
+            consumes = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE }, // リクエストヘッダのContent-Typeをマッピング条件として絞り込み、リクエストから受け取るContent-Typeを指定
+            produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE } // リクエストヘッダのAcceptをマッピング条件として絞り込む+返す形式の(レスポンスのMediaTypeを)指定
+    )
     public UserRest createUser(@RequestBody UserDetailsRequestModel userDetails) {
         // @RequestBody => POST送信のbodyと指定したクラスをマッピングしJavaオブジェクトに変換する
         UserDto userDto = new UserDto();
