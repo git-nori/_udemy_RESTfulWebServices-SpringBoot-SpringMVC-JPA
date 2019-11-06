@@ -27,12 +27,19 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         http.csrf().disable().authorizeRequests()
                 .antMatchers(HttpMethod.POST, SecurityConstants.SIGN_UP_URL)
                 .permitAll()
-                .anyRequest().authenticated().and().addFilter(new AuthenticationFilter(authenticationManager())); // 認証にはカスタムしたAuthenticationFilterクラスを使用するよう設定
+                .anyRequest().authenticated().and().addFilter(getAuthenticationFilter()); // 認証にはカスタムしたAuthenticationFilterクラスを使用するよう設定
     }
 
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
         // 使用するuserDetailsServiceとpasswordEncoderを設定
         auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
+    }
+
+    // 認証に使用するフィルターの生成と、認証に使用するURLの設定
+    public AuthenticationFilter getAuthenticationFilter() throws Exception {
+        final AuthenticationFilter filter = new AuthenticationFilter(authenticationManager());
+        filter.setFilterProcessesUrl("/users/login"); // 認証に使用するURLを設定
+        return filter;
     }
 }
