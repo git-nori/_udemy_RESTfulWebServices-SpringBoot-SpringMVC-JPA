@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.service.UserService;
 import com.example.demo.shared.dto.UserDto;
 import com.example.demo.ui.model.request.UserDetailsRequestModel;
+import com.example.demo.ui.model.response.OperationStatusModel;
+import com.example.demo.ui.model.response.RequestOperationStatus;
 import com.example.demo.ui.model.response.UserRest;
 
 @RestController
@@ -66,8 +68,17 @@ public class UserController {
         return returnValue;
     }
 
-    @DeleteMapping
-    public String deleteUser() {
-        return "delete user was called";
+    @DeleteMapping(path="/{id}",
+            produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE }
+            )
+    public OperationStatusModel deleteUser(@PathVariable("id") String id) {
+        OperationStatusModel returnValue = new OperationStatusModel();
+        returnValue.setOperationName(RequestOperationName.DELETE.name()); // このメソッドを呼ぶことで使用する機能名を格納
+
+        userService.deleteUser(id);
+
+        returnValue.setOperationResult(RequestOperationStatus.SUCCESS.name());
+
+        return returnValue;
     }
 }
