@@ -36,8 +36,8 @@ public class UserController {
     }
 
     @PostMapping(
-            consumes = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE }, // リクエストヘッダのContent-Typeをマッピング条件として絞り込み、リクエストから受け取るContent-Typeを指定
-            produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE } // リクエストヘッダのAcceptをマッピング条件として絞り込む+返す形式の(レスポンスのMediaTypeを)指定
+            consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE }, // リクエストヘッダのContent-Typeをマッピング条件として絞り込み、リクエストから受け取るContent-Typeを指定
+            produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE } // リクエストヘッダのAcceptをマッピング条件として絞り込む+返す形式の(レスポンスのMediaTypeを)指定
     )
     public UserRest createUser(@RequestBody UserDetailsRequestModel userDetails) {
         // @RequestBody => POST送信のbodyと指定したクラスをマッピングしJavaオブジェクトに変換する
