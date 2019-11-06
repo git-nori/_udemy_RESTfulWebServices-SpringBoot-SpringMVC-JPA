@@ -1,9 +1,16 @@
 package com.example.demo.security;
 
+import com.example.demo.SpringApplicationContext;
+
 public class SecurityConstants {
     public static final long EXPIRATION_TIME = 864000000; // 10days
     public static final String TOKEN_PREFIX = "Bearer "; // headerにの値の頭文字に使用する文字列
     public static final String HEADER_STRING = "Authorization"; // header名に使用する文字列
     public static final String SIGN_UP_URL = "/users";
-    public static final String TOKEN_SECRET = "jf9i4jgu83nf10"; // 暗号鍵
+
+    // tokenSecretを返す
+    public static String getTokenSecret() {
+        AppProperties appProperties = (AppProperties) SpringApplicationContext.getBean("appProperties"); // DIコンテナから'appProperties'のBeanを取得
+        return appProperties.getTokenSecret();
+    }
 }

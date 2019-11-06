@@ -6,3 +6,5 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+
+tokenSecret: jf9i4jgu83nf10 # 暗号鍵
