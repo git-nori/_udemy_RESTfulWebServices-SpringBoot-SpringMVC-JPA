@@ -1,5 +1,8 @@
 package com.example.demo.ui.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -10,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.service.UserService;
@@ -26,8 +30,24 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @GetMapping(path = "/{id}",
-            produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
+    @GetMapping
+    public List<UserRest> getUsers(@RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "limit", defaultValue = "25") int limit) {
+        // URL内に指定されているRequestParamを取得し、すべてのユーザーを条件を用いて取得し返す
+        List<UserRest> returnValue = new ArrayList<>();
+
+        List<UserDto> users = userService.getUsers(page, limit);
+
+        for(UserDto userDto : users) {
+            UserRest userModel = new UserRest();
+            BeanUtils.copyProperties(userDto, userModel);
+            returnValue.add(userModel);
+        }
+
+        return returnValue;
+    }
+
+    @GetMapping(path = "/{id}", produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
     public UserRest getUser(@PathVariable("id") String id) {
         UserRest returnValue = new UserRest();
 
@@ -37,8 +57,7 @@ public class UserController {
         return returnValue;
     }
 
-    @PostMapping(
-            consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE }, // リクエストヘッダのContent-Typeをマッピング条件として絞り込み、リクエストから受け取るContent-Typeを指定
+    @PostMapping(consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE }, // リクエストヘッダのContent-Typeをマッピング条件として絞り込み、リクエストから受け取るContent-Typeを指定
             produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE } // リクエストヘッダのAcceptをマッピング条件として絞り込む+返す形式の(レスポンスのMediaTypeを)指定
     )
     public UserRest createUser(@RequestBody UserDetailsRequestModel userDetails) {
@@ -53,10 +72,9 @@ public class UserController {
         return returnValue;
     }
 
-    @PutMapping(path="/{id}",
-            consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE },
-            produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE }
-            )
+    @PutMapping(path = "/{id}", consumes = { MediaType.APPLICATION_JSON_VALUE,
+            MediaType.APPLICATION_XML_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE,
+                    MediaType.APPLICATION_XML_VALUE })
     public UserRest updateUser(@PathVariable("id") String id, @RequestBody UserDetailsRequestModel userDetails) {
         UserDto userDto = new UserDto();
         BeanUtils.copyProperties(userDetails, userDto);
@@ -68,9 +86,7 @@ public class UserController {
         return returnValue;
     }
 
-    @DeleteMapping(path="/{id}",
-            produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE }
-            )
+    @DeleteMapping(path = "/{id}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     public OperationStatusModel deleteUser(@PathVariable("id") String id) {
         OperationStatusModel returnValue = new OperationStatusModel();
         returnValue.setOperationName(RequestOperationName.DELETE.name()); // このメソッドを呼ぶことで使用する機能名を格納
